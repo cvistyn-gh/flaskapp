@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: web-service-lab1
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: cd flaskapp && gunicorn wsgi:app -b 0.0.0.0:$PORT
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
