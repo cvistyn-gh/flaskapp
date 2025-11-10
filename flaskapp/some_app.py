@@ -63,8 +63,8 @@ def net():
 from flask import request
 from flask import Response
 import base64
-# from PIL import Image
-import PIL.Image as Image
+from PIL import Image
+# import PIL.Image as Image
 from io import BytesIO
 import json
 
