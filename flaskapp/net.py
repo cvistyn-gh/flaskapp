@@ -2,12 +2,13 @@ import random
 import keras
 from keras.layers import Input
 from keras.models import Model
-from keras.applications.resnet50 import preprocess_input, decode_predictions
+from keras.applications.resnet_v2 import ResNet50V2, preprocess_input, decode_predictions
+# from keras.applications.resnet50 import preprocess_input, decode_predictions
 import os
 from PIL import Image
 import numpy as np
-from tensorflow.compat.v1 import ConfigProto
-from tensorflow.compat.v1 import InteractiveSession
+# from tensorflow.compat.v1 import ConfigProto
+# from tensorflow.compat.v1 import InteractiveSession
 
 config = ConfigProto()
 config.gpu_options.per_process_gpu_memory_fraction = 0.7
