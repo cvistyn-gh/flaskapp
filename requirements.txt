@@ -4,6 +4,6 @@ requests==2.23.0
 Flask-Bootstrap==3.3.7.1
 Flask-WTF==0.14.3
 Pillow==9.5.0 --only-binary=all
-lxml==4.9.8
+lxml==4.9.4
 # tensorflow-cpu==2.13.0
 # keras==2.13.1
