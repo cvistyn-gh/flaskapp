@@ -92,7 +92,7 @@ try:
         jsondata = {'imagebin': b64.decode('utf-8')}
         print("Sending image to API...")
 
-        res = requests.post(f'{RENDER_URL}/apinet', json=jsondata, timeout=30)
+        res = requests.post(f'{RENDER_URL}/apinet', json=jsondata, timeout=150)
         if res.ok:
             print("✓ API Response successful:")
             print(res.json())
@@ -106,7 +106,7 @@ except Exception as e:
 
 
 try:
-    r = requests.get(f'{RENDER_URL}/apixml', timeout=10)
+    r = requests.get(f'{RENDER_URL}/apixml', timeout=150)
     print(f"XML API status: {r.status_code}")
     if r.status_code == 200:
         print("✓ XML API is working")
