@@ -50,11 +50,12 @@ def net():
     if form.validate_on_submit():
 
         filename = os.path.join('./static', secure_filename(form.upload.data.filename))
-        import net as neuronet
-        fcount, fimage = neuronet.read_image_files(10,'./static')
-        decode = neuronet.getresult(fimage)
-        for elem in decode:
-            neurodic[elem[0][1]] = elem[0][2]
+        neurodic = {"status": "Neural network temporarily disabled"}
+        # import net as neuronet
+        # fcount, fimage = neuronet.read_image_files(10,'./static')
+        # decode = neuronet.getresult(fimage)
+        # for elem in decode:
+            # neurodic[elem[0][1]] = elem[0][2]
 
         form.upload.data.save(filename)
 
