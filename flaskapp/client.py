@@ -43,6 +43,12 @@ RENDER_URL = "https://web-service-lab1.onrender.com"
 
 print(f"Testing application at: {RENDER_URL}")
 
+print("Current working directory:", os.getcwd())
+print("Files in current directory:", os.listdir('.'))
+if os.path.exists('./static'):
+    print("Files in static directory:", os.listdir('./static'))
+else:
+    print("Static directory does not exist")
 
 try:
     r = requests.get(f'{RENDER_URL}/')
