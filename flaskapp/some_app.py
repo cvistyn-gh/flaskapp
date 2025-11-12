@@ -1,5 +1,5 @@
 print("Hello world")
-from flask import Flask, render_template
+from flask import Flask, render_template, flash
 
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, SubmitField, FloatField, SelectField, TextAreaField
