@@ -1,39 +1,3 @@
-# old version
-
-# import requests
-# import os
-# from io import BytesIO
-# import base64
-
-# r = requests.get('http://localhost:5000/')
-# print(r.status_code)
-# print(r.text)
-# r = requests.get('http://localhost:5000/data_to')
-# print(r.status_code)
-# print(r.text) 
-# r = requests.get('http://localhost:5000/net')
-# print(r.status_code)
-# print(r.text) 
-
-# img_data = None
-# path = os.path.join('./static','image0008.png')
-# with open(path, 'rb') as fh:
-    # img_data = fh.read()
-    # b64 = base64.b64encode(img_data)
-# jsondata = {'imagebin':b64.decode('utf-8')}
-# res = requests.post('http://localhost:5000/apinet', json=jsondata)
-# if res.ok:
-    # print(res.json())
-
-# try:
-    # r = requests.get('http://localhost:5000/apixml')
-    # print(r.status_code)
-    # if(r.status_code!=200):
-        # exit(1)
-    # print(r.text)
-# cept:
-    # exit(1)
-
 import requests
 import os
 from io import BytesIO
@@ -79,6 +43,43 @@ try:
         print(f"✗ Net page error: {r.text}")
 except Exception as e:
     print(f"✗ Net page request failed: {e}")
+
+try:
+    r = requests.get(f'{RENDER_URL}/denoise')
+    print(f"Denoise page status: {r.status_code}")
+    if r.status_code == 200:
+        print("✓ Denoise page is working")
+    else:
+        print(f"✗ Denoise page error: {r.status_code}")
+except Exception as e:
+    print(f"✗ Denoise page request failed: {e}")
+
+try:
+    img_data = None
+    path = os.path.join('./flaskapp/static','image0008.png')
+
+    if os.path.exists(path):
+        print("Testing denoise functionality with image...")
+
+        with open(path, 'rb') as fh:
+            files = {'upload': ('test_image.png', fh, 'image/png')}
+            data = {'filter_type': 'gaussian', 'strength': '1.5'}
+
+            res = requests.post(f'{RENDER_URL}/denoise', files=files, data=data, timeout=120)
+
+            if res.ok:
+                print("✓ Denoise form submission successful")
+                if 'Original Image' in res.text and 'Processed Image' in res.text:
+                    print("✓ Denoise processing completed successfully")
+                else:
+                    print("⚠ Denoise response received but content may be incomplete")
+            else:
+                print(f"✗ Denoise form submission failed: {res.status_code}")
+    else:
+        print(f"✗ Test image not found at: {path}")
+
+except Exception as e:
+    print(f"✗ Denoise functionality test failed: {e}")
 
 try:
     img_data = None

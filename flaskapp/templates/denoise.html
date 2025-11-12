@@ -1,0 +1,85 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Image Denoising{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Image Denoising and Analysis</h1>
+    
+    <div class="row">
+        <div class="col-md-6">
+            {{ wtf.quick_form(form, form_type="basic", button_map={'submit': 'primary'}) }}
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Filter Information</h5>
+                    <p><strong>Gaussian Blur:</strong> Smooths image using Gaussian function</p>
+                    <p><strong>Median Filter:</strong> Removes salt-and-pepper noise</p>
+                    <p><strong>Bilateral Filter:</strong> Preserves edges while smoothing</p>
+                    <p><strong>Non-Local Means:</strong> Advanced noise reduction</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if original_image %}
+    <hr>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Original Image</h3>
+                </div>
+                <div class="card-body">
+                    <img src="{{ original_image }}" class="img-fluid" alt="Original">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Processed Image</h3>
+                </div>
+                <div class="card-body">
+                    <img src="{{ processed_image }}" class="img-fluid" alt="Processed">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if color_plot %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Color Distribution Analysis</h3>
+                </div>
+                <div class="card-body">
+                    <img src="{{ color_plot }}" class="img-fluid" alt="Color Distribution">
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if noise_plot %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Noise Analysis</h3>
+                </div>
+                <div class="card-body">
+                    <img src="{{ noise_plot }}" class="img-fluid" alt="Noise Analysis">
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% endif %}
+</div>
+{% endblock %}
