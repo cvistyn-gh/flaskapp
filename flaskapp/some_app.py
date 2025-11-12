@@ -96,6 +96,8 @@ def net():
             neurodic[elem[0][1]] = f"{elem[0][2]:.4f}"
 
         print(f"DEBUG: Processed image {filename}, result: {neurodic}")
+        # Сохраняем только имя файла для отображения в HTML
+        filename = secure_filename(form.upload.data.filename)
 
     return render_template('net.html', form=form, image_name=filename, neurodic=neurodic)
 
