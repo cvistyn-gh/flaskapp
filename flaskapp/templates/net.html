@@ -37,7 +37,7 @@
         <!-- Отображение изображения с Bootstrap классами -->
         <!-- class="img-rounded" - скругленные углы -->
         <!-- width=224 height=224 - размеры для нейросети ResNet -->
-        <p><img src={{image_name}} class="img-rounded" alt="My Image" width=224 height=224 />
+        <p><img src="{{ url_for('static', filename=image_name) }}" class="img-rounded" alt="My Imag
     {% else %}
         <!-- Сообщение если изображение еще не загружено -->
         <p> There is no image yet </p>
