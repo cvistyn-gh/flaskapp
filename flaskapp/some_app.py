@@ -2,7 +2,6 @@ print("Hello world")
 from flask import Flask, render_template
 
 from flask_wtf import FlaskForm, RecaptchaField
-# from wtforms import StringField, SubmitField, TextAreaField
 from wtforms import StringField, SubmitField, FloatField, SelectField, TextAreaField
 from wtforms.validators import DataRequired, NumberRange
 from flask_wtf.file import FileField, FileAllowed, FileRequired
@@ -32,17 +31,15 @@ class NetForm(FlaskForm):
     submit = SubmitField('send')
 
 class DenoiseForm(FlaskForm):
-    upload = FileField('Load image', validators=[
-        FileRequired(),
+    upload = FileField('Load image', validators=[FileRequired(),
         FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])
     filter_type = SelectField('Filter Type', choices=[
-        ('gaussian', 'Gaussian Blur'),
-        ('median', 'Median Filter'),
-        ('bilateral', 'Bilateral Filter'),
-        ('nlm', 'Non-Local Means')
+        ('gaussian', 'Gaussian Blur'),('median', 'Median Filter'),
+        ('bilateral', 'Bilateral Filter'),('nlm', 'Non-Local Means')
     ], default='gaussian')
     strength = FloatField('Filter Strength', validators=[
         NumberRange(min=0.1, max=10.0)], default=1.0)
+    recaptcha = RecaptchaField()
     submit = SubmitField('Process Image')
 
 @app.route("/")
@@ -165,6 +162,7 @@ def denoise():
 
     if form.validate_on_submit():
         try:
+
             # Читаем загруженное изображение
             image_file = form.upload.data
             img_array = np.frombuffer(image_file.read(), np.uint8)
@@ -176,28 +174,29 @@ def denoise():
 
             original_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
 
+            # Применяем выбранный фильтр
             filter_type = form.filter_type.data
             strength = form.strength.data
 
             if filter_type == 'gaussian':
-                kernel_size = max(3, int(strength * 2) * 2 + 1)
-                kernel_size = min(kernel_size, 31)
+                kernel_size = max(3, int(strength * 2) * 2 + 1)  # Нечетное число
+                kernel_size = min(kernel_size, 31)  # Ограничиваем максимальный размер
                 processed_image = cv2.GaussianBlur(original_image, (kernel_size, kernel_size), strength)
 
             elif filter_type == 'median':
                 kernel_size = max(3, int(strength * 2) * 2 + 1)
-                kernel_size = min(kernel_size, 15)
+                kernel_size = min(kernel_size, 15)  # Ограничение для median filter
                 processed_image = cv2.medianBlur(original_image, kernel_size)
 
             elif filter_type == 'bilateral':
                 d = int(strength * 5)
-                d = min(d, 15)
+                d = min(d, 15)  # Ограничиваем параметр
                 processed_image = cv2.bilateralFilter(original_image, d, d*2, d/2)
 
             elif filter_type == 'nlm':
-
+                # Non-local means denoising
                 h = strength * 10
-                h = min(h, 30)
+                h = min(h, 30)  # Ограничиваем параметр
                 processed_image = cv2.fastNlMeansDenoisingColored(original_image, None, h, h, 7, 21)
 
             # Создаем график распределения цветов
@@ -210,15 +209,13 @@ def denoise():
             original_image = save_image_to_base64(original_image)
             processed_image = save_image_to_base64(processed_image)
 
+            flash('Image processed successfully!', 'success')
         except Exception as e:
             flash(f'Error processing image: {str(e)}', 'danger')
 
-    return render_template('denoise.html',
-                         form=form,
-                         original_image=original_image,
-                         processed_image=processed_image,
-                         color_plot=color_plot,
-                         noise_plot=noise_plot)
+    return render_template('denoise.html',form=form,
+        original_image=original_image,processed_image=processed_image,
+        color_plot=color_plot,noise_plot=noise_plot)
 
 def create_color_histogram(original, processed):
 

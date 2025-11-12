@@ -49,34 +49,35 @@ try:
     print(f"Denoise page status: {r.status_code}")
     if r.status_code == 200:
         print("✓ Denoise page is working")
+        # Проверяем, что reCAPTCHA присутствует на странице
+        if 'recaptcha' in r.text.lower():
+            print("✓ reCAPTCHA is present on denoise page")
+        else:
+            print("⚠ reCAPTCHA not found on denoise page")
     else:
         print(f"✗ Denoise page error: {r.status_code}")
 except Exception as e:
     print(f"✗ Denoise page request failed: {e}")
 
 try:
-    img_data = None
-    path = os.path.join('./flaskapp/static','image0008.png')
+    print("Testing denoise page accessibility...")
+    # Только GET запрос для проверки доступности страницы
+    # POST запрос с файлом не выполняется из-за reCAPTCHA
+    r = requests.get(f'{RENDER_URL}/denoise', timeout=30)
 
-    if os.path.exists(path):
-        print("Testing denoise functionality with image...")
-
-        with open(path, 'rb') as fh:
-            files = {'upload': ('test_image.png', fh, 'image/png')}
-            data = {'filter_type': 'gaussian', 'strength': '1.5'}
-
-            res = requests.post(f'{RENDER_URL}/denoise', files=files, data=data, timeout=120)
-
-            if res.ok:
-                print("✓ Denoise form submission successful")
-                if 'Original Image' in res.text and 'Processed Image' in res.text:
-                    print("✓ Denoise processing completed successfully")
-                else:
-                    print("⚠ Denoise response received but content may be incomplete")
-            else:
-                print(f"✗ Denoise form submission failed: {res.status_code}")
+    if r.status_code == 200:
+        # Проверяем наличие ключевых элементов формы на странице
+        required_elements = ['upload','filter_type','strength','recaptcha']
+        found_elements = []
+        for element in required_elements:
+            if element in r.text:
+                found_elements.append(element)
+        if len(found_elements) >= 3:  # Хотя бы 3 из 4 элементов
+            print("✓ Denoise form elements found on page")
+        else:
+            print(f"⚠ Some form elements missing. Found: {found_elements}")
     else:
-        print(f"✗ Test image not found at: {path}")
+        print(f"✗ Denoise page not accessible: {r.status_code}")
 
 except Exception as e:
     print(f"✗ Denoise functionality test failed: {e}")
